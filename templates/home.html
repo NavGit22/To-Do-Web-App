@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Google fonts-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="../static/css/styles_main.css">
+</head>
+
+<body>
+<div class="text-right">
+  {% if current_user.is_authenticated: %}
+  <a href="{{ url_for('logout') }}">
+  <button class="btn-position btn btn-outline-danger text-right"><i class="fa fa-power-off"></i></button>
+  </a>
+  {% endif %}
+</div>
+<div class="text-center">
+  <h5>Welcome {{users.name }} </h5>
+</div>
+<div class="row d-flex justify-content-center container">
+    <div class="col-md-10">
+      <div class="card-hover-shadow-2x mb-3 card">
+        <div class="card-header-tab card-header">
+          <div class="card-header-title font-size-lg text-capitalize font-weight-normal"><i
+              class="fa fa-tasks"></i>&nbsp;TO DO Lists</div>
+          </div>
+
+        <div class="scroll-area-sm">
+          <perfect-scrollbar class="ps-show-limits">
+            <div style="position: static;" class="ps ps--active-y">
+              <div class="ps-content">
+                <ul class=" list-group list-group-flush">
+                  {% for task in task_list %}
+                   <li class="list-group-item">
+                      <div class="widget-content p-0">
+                      <div class="widget-content-wrapper">
+                        <div class="widget-content-left">
+                          <div class="widget-heading">
+                             {% if task.task_status == 'OPEN': %}
+                             <h5>{{ task.task_name }} on {{ task.task_date }} at {{ task.task_time}} </h5>
+                             {% else %}
+                             <h5><s>{{ task.task_name }} on {{ task.task_date }} at {{ task.task_time}} </s></h5>
+                             {% endif %}
+                             {% if task.task_priority == 'HIGH': %}
+                              <div class="badge badge-danger ml-2"> Priority: HIGH</div>
+                             {% elif task.task_priority == 'MEDIUM':  %}
+                              <div class="badge badge-warning ml-2">Priority: MEDIUM</div>
+                             {% else %}
+                              <div class="badge badge-info ml-2">Priority: LOW</div>
+                             {% endif %}
+                             {% if task.task_status == 'OPEN': %}
+                               <div class="badge badge-success ml-2"> Status: {{ task.task_status }}</div>
+                             {% else %}
+                               <div class="badge badge-danger ml-2"> Status: {{ task.task_status }}</div>
+                             {% endif %}
+                          </div>
+                        </div>
+                      <div class="widget-content-right">
+                        <a href=" {{ url_for('check', task_id=task.id) }}">
+                        <button class="border-0 btn-transition btn btn-outline-success">
+                          <i class="fa fa-check"></i></button>
+                        </a>
+                        <a href=" {{ url_for('uncheck', task_id=task.id) }}">
+                        <button class="border-0 btn-transition btn btn-outline-info">
+                          <i class="fa fa-rotate-left"></i></button>
+                        </a>
+                        <a href=" {{ url_for('delete', task_id=task.id) }}">
+                            <button class="border-0 btn-transition btn btn-outline-danger">
+                             <i class="fa fa-trash"></i>
+                            </button>
+                        </a>
+                      </div>
+                      </div>
+                    </div>
+                   </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </perfect-scrollbar>
+        </div>
+        <div class="d-block text-left card-footer">
+          <form action="/add" method="post">
+            <label>Task:</label>
+            <input type="text" placeholder="task" name="taskname" value="" required>
+            <label>Date:</label>
+            <input type="date" placeholder="date" name="taskdate" value="" required>
+            <label for="appt">Time:</label>
+            <input type="time" id="appt" name="tasktime" required>
+            <label for="priority">Priority:</label>
+            <select name="taskpriority" id="priority">
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+            </select>
+            <button class="btn btn-primary btn-sm" type="submit">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+<div>
+
+</div>
+
+</body>
+</html>
